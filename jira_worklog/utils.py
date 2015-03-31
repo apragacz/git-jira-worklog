@@ -12,11 +12,6 @@ def identity(elem):
     return elem
 
 
-def equivalence_by_key(obj1, obj2, key):
-    '''equivalence helper function, based on key function'''
-    return key(obj1) == key(obj2)
-
-
 def ilimit(iterable, limit=100, offset=0):
     '''filter the iterable'''
     end_offset = offset + limit
