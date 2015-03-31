@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 import os.path
 import subprocess
 
+from .exceptions import CommandError
+
 
 def get_git_rootdir():
     cmd = ['git', 'rev-parse', '--show-toplevel']
@@ -13,7 +15,16 @@ def get_git_rootdir():
 
 def get_git_config(config_name):
     cmd = ['git', 'config', config_name]
-    data = subprocess.check_output(cmd)
+    try:
+        data = subprocess.check_output(cmd)
+    except subprocess.CalledProcessError:
+        raise CommandError(
+            'Value for {name} is not specified. '
+            'Please specify it using the command:\n'
+            'git config {name} <value>'.format(
+                name=config_name,
+            )
+        )
     return data.decode('utf-8').rstrip()
 
 
