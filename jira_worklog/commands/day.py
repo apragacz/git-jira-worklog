@@ -30,11 +30,15 @@ def get_worklog_events(date=None):
     return result
 
 
+def print_worklog_events_by_date(date):
+    for event_group in get_worklog_events(date):
+        print(pretty_form_tuple(event_group))
+
+
 def command(date_string=None, *args):
     try:
         date = datetime.datetime.strptime(date_string, "%Y-%m-%d").date()
     except (ValueError, TypeError):
         raise CommandError('Date not in form YYYY-MM-DD')
 
-    for event in get_worklog_events(date):
-        print(pretty_form_tuple(event))
+    print_worklog_events_by_date(date)
