@@ -5,10 +5,10 @@ from functools import partial
 from ..events import event_from_gitlog, group_events, pretty_form_tuple
 from ..exceptions import CommandError
 from ..git import get_email, get_git_log_file, get_project_name
-from ..utils import compose, ilimit
+from ..utils import bcolors, compose, cprint, ilimit
 
 
-def get_worklog_events(date=None):
+def get_worklog_event_groups(date=None):
     email = get_email()
     project_name = get_project_name()
     if not email:
@@ -31,7 +31,15 @@ def get_worklog_events(date=None):
 
 
 def print_worklog_events_by_date(date):
-    for event_group in get_worklog_events(date):
+    event_groups = get_worklog_event_groups(date)
+    if not event_groups:
+        cprint('JIRA worklog for {} is empty.'.format(date),
+               color=bcolors.BOLD)
+        return
+    cprint('JIRA worklog for {}:'.format(date),
+           color=bcolors.BOLD)
+
+    for event_group in event_groups:
         print(pretty_form_tuple(event_group))
 
 
