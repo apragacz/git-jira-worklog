@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals, print_function
+import argparse
 import sys
 
 from .commands import day, last_friday, today, yesterday
@@ -8,9 +9,20 @@ from .exceptions import CommandError
 cmd_map = {}
 
 
-def add_command(cmd_module):
+def add_command(subparsers, cmd_module):
     cmd_name = cmd_module.__name__.rsplit('.')[-1].replace('_', '-')
     cmd_map[cmd_name] = cmd_module.command
+
+    cmd_parser = subparsers.add_parser(cmd_name)
+    if hasattr(cmd_module, 'prepare_parser'):
+        cmd_module.prepare_parser(cmd_parser)
+
+
+def add_commands(subparsers):
+    add_command(subparsers, day)
+    add_command(subparsers, today)
+    add_command(subparsers, yesterday)
+    add_command(subparsers, last_friday)
 
 
 def default_command(*args):
@@ -18,18 +30,18 @@ def default_command(*args):
 
 
 def main(args):
-    add_command(day)
-    add_command(today)
-    add_command(yesterday)
-    add_command(last_friday)
-
-    cmd_name = args[1] if len(args) > 1 else None
-    cmd = cmd_map.get(cmd_name, default_command)
-    cmd_args = args[2:]
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest='sub_command')
+    add_commands(subparsers)
+    namespace = parser.parse_args(args[1:])
+    cmd = cmd_map[namespace.sub_command]
+    cmd_kwargs = vars(namespace)
+    cmd_kwargs.pop('sub_command')
     try:
-        cmd(*cmd_args)
+        cmd(**cmd_kwargs)
     except CommandError as exc:
         print(exc.args[0], file=sys.stderr)
+        sys.exit(1)
 
 
 def entry_point():

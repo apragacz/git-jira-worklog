@@ -43,7 +43,11 @@ def print_worklog_events_by_date(date):
         print(pretty_form_tuple(event_group))
 
 
-def command(date_string=None, *args):
+def prepare_parser(parser):
+    parser.add_argument('date_string')
+
+
+def command(date_string):
     try:
         date = datetime.datetime.strptime(date_string, "%Y-%m-%d").date()
     except (ValueError, TypeError):
