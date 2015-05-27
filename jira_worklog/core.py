@@ -40,7 +40,7 @@ def main(args):
     try:
         cmd(**cmd_kwargs)
     except CommandError as exc:
-        print(exc.args[0], file=sys.stderr)
+        print('git-jira-worklog: error: {}'.format(exc.message), file=sys.stderr)
         sys.exit(1)
 
 
