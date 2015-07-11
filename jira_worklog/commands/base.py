@@ -1,10 +1,21 @@
 from __future__ import absolute_import, unicode_literals, print_function
+import datetime
 from functools import partial
 
 from ..events import event_from_gitlog, group_events, pretty_form_tuple
 from ..exceptions import CommandError
 from ..git import get_email, get_git_log_file, get_project_name
 from ..utils import bcolors, compose, cprint, ilimit
+
+
+def get_last_weekday_date(weekday):
+    date_today = datetime.date.today()
+    if date_today.weekday() > weekday:
+        delta_days = date_today.weekday() - weekday
+    else:
+        delta_days = date_today.weekday() + 7 - weekday
+    date = date_today - datetime.timedelta(delta_days)
+    return date
 
 
 def get_worklog_event_groups(date=None):
