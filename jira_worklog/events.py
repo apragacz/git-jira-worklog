@@ -15,14 +15,8 @@ Event = collections.namedtuple('Event', (
 ))
 
 
-def event_from_gitlog(line, project_name):
-    splits = line.decode('utf8').strip().split(' ', 3)
-    commit_hash = splits[0]
-    timestamp = int(splits[1])
-    author_email = splits[2]
-    full_comment = splits[3]
+def parse_full_comment(full_comment, project_name):
     comment_sp = full_comment.split(' ', 1)
-    date_time = datetime.datetime.fromtimestamp(timestamp)
     ticket_pat = '^({})\\-[0-9]+$'.format(project_name)
     ticket_re = re.compile(ticket_pat)
     if ticket_re.search(comment_sp[0]):
@@ -34,6 +28,17 @@ def event_from_gitlog(line, project_name):
     else:
         ticket = None
         comment = full_comment
+    return (ticket, comment)
+
+
+def event_from_gitlog(line, project_name):
+    splits = line.decode('utf8').strip().split(' ', 3)
+    commit_hash = splits[0]
+    timestamp = int(splits[1])
+    author_email = splits[2]
+    full_comment = splits[3]
+    (ticket, comment) = parse_full_comment(full_comment, project_name)
+    date_time = datetime.datetime.fromtimestamp(timestamp)
     return Event(
         commit_hash=commit_hash,
         datetime=date_time,
