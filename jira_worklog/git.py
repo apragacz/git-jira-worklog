@@ -44,6 +44,10 @@ def get_project_name():
     return get_git_config('jiraworklog.projectname')
 
 
+def set_project_name(project):
+    set_git_config('jiraworklog.projectname', project)
+
+
 def get_current_branch():
     cmd = ['git', 'branch']
     try:
@@ -56,9 +60,15 @@ def get_current_branch():
     raise ValueError('current branch not found')
 
 
-def set_jira_issue(issue):
+def get_issue():
     branch = get_current_branch()
-    set_git_config('branch.{}.jiraissue'.format(branch), issue)
+    return get_git_config('branch.{}.issue'.format(branch))
+
+
+def set_issue(issue):
+    branch = get_current_branch()
+    # TODO: test pattern
+    set_git_config('branch.{}.issue'.format(branch), issue)
 
 
 def get_git_log_file():
