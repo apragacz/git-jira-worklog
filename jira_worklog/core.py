@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals, print_function
 import argparse
 import sys
 
-from .commands import day, last, today, yesterday
+from .commands import day, last, project, today, yesterday
 from .exceptions import CommandError
 
 
@@ -20,9 +20,10 @@ def add_command(subparsers, cmd_module):
 
 def add_commands(subparsers):
     add_command(subparsers, day)
+    add_command(subparsers, last)
+    add_command(subparsers, project)
     add_command(subparsers, today)
     add_command(subparsers, yesterday)
-    add_command(subparsers, last)
 
 
 def default_command(*args):
