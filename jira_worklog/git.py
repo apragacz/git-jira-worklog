@@ -2,14 +2,14 @@ from __future__ import unicode_literals
 import os.path
 import subprocess
 
-from .exceptions import CommandError
+from .exceptions import GitError
 
 
 def get_git_rootdir():
     cmd = ['git', 'rev-parse', '--show-toplevel']
     dirpath = subprocess.check_output(cmd).rstrip()
     if not os.path.exists(dirpath):
-        raise ValueError('git directory {} does not exists'.format(dirpath))
+        raise GitError('git directory {} does not exists'.format(dirpath))
     return dirpath
 
 
@@ -18,7 +18,7 @@ def get_git_config(config_name):
     try:
         data = subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
-        raise CommandError(
+        raise GitError(
             'Value for {name} is not specified. '
             'Please specify it using the command:\n'
             'git config {name} <value>'.format(
@@ -33,7 +33,7 @@ def set_git_config(config_name, value):
     try:
         subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
-        raise CommandError('git config failed')
+        raise GitError('git config failed')
 
 
 def get_email():
@@ -53,11 +53,11 @@ def get_current_branch():
     try:
         data = subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
-        raise ValueError('git branch failed')
+        raise GitError('git branch failed')
     for line in data.decode('utf-8').split('\n'):
         if line.startswith('*'):
             return line[1:].strip()
-    raise ValueError('current branch not found')
+    raise GitError('current branch not found')
 
 
 def get_issue():
