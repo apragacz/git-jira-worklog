@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals, print_function
 import argparse
 import sys
 
-from .commands import day, issue, last, project, today, yesterday
+from .commands import commit, day, issue, last, project, today, yesterday
 from .exceptions import CommandError
 
 
@@ -19,6 +19,7 @@ def add_command(subparsers, cmd_module):
 
 
 def add_commands(subparsers):
+    add_command(subparsers, commit)
     add_command(subparsers, day)
     add_command(subparsers, issue)
     add_command(subparsers, last)
