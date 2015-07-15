@@ -20,8 +20,8 @@ def command(args):
     with tempfile.NamedTemporaryFile() as f:
         f.write(issue_prefix)
         f.flush()
-        cmd_args = ['git', 'commit', '-F']
-        cmd_args.append(f.name)
+        cmd_args = ['git', 'commit']
         cmd_args.extend(args)
-        print(cmd_args)
+        cmd_args.append('--template')
+        cmd_args.append(f.name)
         os.system(' '.join(cmd_args))
