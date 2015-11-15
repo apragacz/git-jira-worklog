@@ -1,8 +1,10 @@
 from __future__ import absolute_import, unicode_literals, print_function
 import argparse
+import importlib
+import pkgutil
 import sys
 
-from .commands import commit, day, issue, last, project, today, yesterday
+from . import commands
 from .exceptions import CommandError
 
 
@@ -19,13 +21,14 @@ def add_command(subparsers, cmd_module):
 
 
 def add_commands(subparsers):
-    add_command(subparsers, commit)
-    add_command(subparsers, day)
-    add_command(subparsers, issue)
-    add_command(subparsers, last)
-    add_command(subparsers, project)
-    add_command(subparsers, today)
-    add_command(subparsers, yesterday)
+    for _, modname, ispkg in pkgutil.iter_modules(commands.__path__):
+        if ispkg:
+            continue
+        if modname == 'base':
+            continue
+        cmd_module_name = 'jira_worklog.commands.{}'.format(modname)
+        cmd_module = importlib.import_module(cmd_module_name)
+        add_command(subparsers, cmd_module)
 
 
 def default_command(*args):
