@@ -86,9 +86,11 @@ def set_issue(issue):
     set_git_config('branch.{}.issue'.format(branch), issue)
 
 
-def get_git_log_file(repo_path=None):
+def get_git_log_file(include_all=True, repo_path=None):
     cmd = get_git_command_data('log', repo_path=repo_path)
     cmd.append('--format=%H %at %ae %s')
+    if include_all:
+        cmd.append('--all')
     pipe = subprocess.Popen(
         cmd,
         stdin=subprocess.PIPE,
