@@ -1,6 +1,10 @@
-class CommandError(ValueError):
+class WorklogError(ValueError):
     pass
 
 
-class GitError(ValueError):
+class CommandError(WorklogError):
+    pass
+
+
+class GitError(WorklogError):
     pass

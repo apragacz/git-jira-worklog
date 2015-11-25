@@ -5,7 +5,7 @@ import pkgutil
 import sys
 
 from . import commands
-from .exceptions import CommandError
+from .exceptions import WorklogError
 
 
 cmd_map = {}
@@ -31,10 +31,6 @@ def add_commands(subparsers):
         add_command(subparsers, cmd_module)
 
 
-def default_command(*args):
-    print('invalid command', file=sys.stderr)
-
-
 def main(args):
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='sub_command')
@@ -45,7 +41,7 @@ def main(args):
     cmd_kwargs.pop('sub_command')
     try:
         cmd(**cmd_kwargs)
-    except CommandError as exc:
+    except WorklogError as exc:
         print('git-jira-worklog: error: {}'.format(exc.message), file=sys.stderr)
         sys.exit(1)
 
