@@ -5,16 +5,30 @@ import subprocess
 from .exceptions import GitError
 
 
-def get_git_rootdir():
-    cmd = ['git', 'rev-parse', '--show-toplevel']
+def get_git_dir(repo_path):
+    return os.path.join(repo_path, '.git')
+
+
+def get_git_command_data(command_name, repo_path=None):
+    cmd = ['git']
+    if repo_path:
+        cmd.append('--git-dir={}'.format(repo_path))
+    cmd.append(command_name)
+    return cmd
+
+
+def get_git_rootdir(repo_path=None):
+    cmd = get_git_command_data('rev-parse', repo_path=repo_path)
+    cmd.append('--show-toplevel')
     dirpath = subprocess.check_output(cmd).rstrip()
     if not os.path.exists(dirpath):
         raise GitError('git directory {} does not exists'.format(dirpath))
     return dirpath
 
 
-def get_git_config(config_name):
-    cmd = ['git', 'config', config_name]
+def get_git_config(config_name, repo_path=None):
+    cmd = get_git_command_data('config', repo_path=repo_path)
+    cmd.append(config_name)
     try:
         data = subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
@@ -36,20 +50,20 @@ def set_git_config(config_name, value):
         raise GitError('git config failed')
 
 
-def get_email():
-    return get_git_config('user.email')
+def get_email(repo_path=None):
+    return get_git_config('user.email', repo_path=repo_path)
 
 
-def get_project_name():
-    return get_git_config('jiraworklog.projectname')
+def get_project_name(repo_path=None):
+    return get_git_config('jiraworklog.projectname', repo_path=repo_path)
 
 
 def set_project_name(project):
     set_git_config('jiraworklog.projectname', project)
 
 
-def get_current_branch():
-    cmd = ['git', 'branch']
+def get_current_branch(repo_path=None):
+    cmd = get_git_command_data('branch', repo_path=repo_path)
     try:
         data = subprocess.check_output(cmd)
     except subprocess.CalledProcessError:
@@ -60,9 +74,10 @@ def get_current_branch():
     raise GitError('current branch not found')
 
 
-def get_issue():
-    branch = get_current_branch()
-    return get_git_config('branch.{}.issue'.format(branch))
+def get_issue(repo_path=None):
+    branch = get_current_branch(repo_path=repo_path)
+    return get_git_config('branch.{}.issue'.format(branch),
+                          repo_path=repo_path)
 
 
 def set_issue(issue):
@@ -71,9 +86,11 @@ def set_issue(issue):
     set_git_config('branch.{}.issue'.format(branch), issue)
 
 
-def get_git_log_file():
+def get_git_log_file(repo_path=None):
+    cmd = get_git_command_data('log', repo_path=repo_path)
+    cmd.append('--format=%H %at %ae %s')
     pipe = subprocess.Popen(
-        ['git', 'log', '--format=%H %at %ae %s'],
+        cmd,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         close_fds=True,
