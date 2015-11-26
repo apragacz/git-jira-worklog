@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals, print_function
+import itertools
 import sys
 from functools import reduce
 
@@ -55,14 +56,5 @@ def ilimit(iterable, limit=100, offset=0):
 
 
 def group_by(elements, key):
-
-    def add_to_group(elem_groups, elem):
-        last_group = elem_groups[-1] if len(elem_groups) > 0 else ()
-        if not last_group:
-            return elem_groups[:-1] + [(elem,)]
-        elif key(last_group[0]) == key(elem):
-            return elem_groups[:-1] + [last_group + (elem,)]
-        else:
-            return elem_groups + [(elem,)]
-
-    return reduce(add_to_group, elements, [])
+    for group_key, group_iter in itertools.groupby(elements, key=key):
+        yield list(group_iter)
