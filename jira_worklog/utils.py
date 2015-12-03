@@ -58,3 +58,11 @@ def ilimit(iterable, limit=100, offset=0):
 def group_by(elements, key):
     for group_key, group_iter in itertools.groupby(elements, key=key):
         yield list(group_iter)
+
+
+def next_pair(iterator):
+    try:
+        elem = next(iterator)
+        return (elem, True)
+    except StopIteration:
+        return (None, False)
