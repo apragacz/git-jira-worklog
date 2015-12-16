@@ -12,7 +12,7 @@ def get_git_dir(repo_path):
 def get_git_command_data(command_name, repo_path=None):
     cmd = ['git']
     if repo_path:
-        cmd.append('--git-dir={}'.format(repo_path))
+        cmd.append('--git-dir={}'.format(get_git_dir(repo_path)))
     cmd.append(command_name)
     return cmd
 
