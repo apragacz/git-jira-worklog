@@ -42,3 +42,21 @@ def save_config(config_data):
 
     with open(config_path, 'wt') as f:
         json.dump(config_data, f, indent=2, sort_keys=True)
+
+
+def add_repository_directory(config_data, team, repo_dir):
+    team_cfg = config_data['teams'].setdefault(team, get_default_team_config())
+    repo_dirs = team_cfg['repository_directories']
+    if repo_dir not in repo_dirs:
+        repo_dirs.append(repo_dir)
+
+    team_cfg['repository_directories'] = sorted(repo_dirs)
+
+
+def get_repository_directories(config_data, team):
+    team_cfg = config_data['teams'].get(team, get_default_team_config())
+    return team_cfg['repository_directories']
+
+
+def get_teams(config_data):
+    return config_data['teams'].keys()
