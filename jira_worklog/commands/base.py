@@ -5,7 +5,7 @@ from functools import partial
 from ..events import event_from_gitlog, group_events, pretty_form_tuple
 from ..exceptions import CommandError
 from ..git import get_email, get_git_log_file, get_project_name
-from ..utils import bcolors, compose, cprint, ilimit
+from ..utils import bcolors, compose, cprint, limit
 
 
 def get_last_weekday_date(weekday):
@@ -32,7 +32,7 @@ def get_worklog_event_groups(date=None):
         partial(sorted, key=lambda e: e.datetime),
         partial(filter, lambda e: e.datetime.date() == date),
         partial(filter, lambda e: e.author_email == email),
-        partial(ilimit, limit=1000),
+        partial(limit, limit=1000),
         partial(map, partial(event_from_gitlog, project_name=project_name))
     )
     result = process(p_out)
