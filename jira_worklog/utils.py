@@ -101,7 +101,7 @@ def is_in_sequence(index, sequence):
         return False
 
 
-def merge_sorted_sequences(seq1, seq2):
+def merge_two_sorted_sequences(seq1, seq2):
     i = j = 0
     while is_in_sequence(i, seq1) and is_in_sequence(j, seq2):
         a = seq1[i]
@@ -120,7 +120,7 @@ def merge_sorted_sequences(seq1, seq2):
         j += 1
 
 
-def merge_sorted(iterable1, iterable2):
-    for elem in merge_sorted_sequences(ForwardSequence(iterable1),
-                                       ForwardSequence(iterable2)):
-        yield elem
+def merge_sorted(iterable, *iterables):
+    return reduce(lambda iterator, iterable: merge_two_sorted_sequences(
+        ForwardSequence(iterator), ForwardSequence(iterable),
+    ), iterables, iter(iterable))
