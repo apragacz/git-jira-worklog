@@ -16,9 +16,10 @@ WEEKDAYS_INDICES_MAP = {wd: i for i, wd in enumerate(WEEKDAYS)}
 
 def prepare_parser(parser):
     parser.add_argument('weekday', choices=WEEKDAYS)
+    parser.add_argument('--team', '-t')
 
 
-def command(weekday):
+def command(weekday, team):
     weekday_index = WEEKDAYS_INDICES_MAP[weekday]
     date = get_last_weekday_date(weekday_index)
-    print_worklog_events_by_date(date)
+    print_worklog_events_by_date(date, team)

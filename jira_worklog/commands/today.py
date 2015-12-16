@@ -4,6 +4,10 @@ import datetime
 from .base import print_worklog_events_by_date
 
 
-def command():
+def prepare_parser(parser):
+    parser.add_argument('--team', '-t')
+
+
+def command(team):
     date = datetime.date.today()
-    print_worklog_events_by_date(date)
+    print_worklog_events_by_date(date, team)
