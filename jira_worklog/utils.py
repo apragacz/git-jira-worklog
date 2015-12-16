@@ -61,14 +61,6 @@ def group_by(elements, key):
         yield list(group_iter)
 
 
-def next_pair(iterator):
-    try:
-        elem = next(iterator)
-        return (elem, True)
-    except StopIteration:
-        return (None, False)
-
-
 class ForwardSequence(object):
 
     def __init__(self, iterable):
