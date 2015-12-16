@@ -5,7 +5,8 @@ from functools import partial
 from ..events import event_from_gitlog, group_events, pretty_form_tuple
 from ..exceptions import CommandError
 from ..git import get_email, get_git_log_file, get_project_name
-from ..utils import bcolors, compose, cprint
+from ..utils.printing import bcolors, cprint
+from ..utils.functools import build_pipe
 from ..utils.compat import filter, map
 
 
@@ -19,7 +20,7 @@ def get_last_weekday_date(weekday):
     return date
 
 
-def get_worklog_event_groups(date=None):
+def get_worklog_event_groups(date=None, team=None):
     email = get_email()
     project_name = get_project_name()
     if not email:
@@ -28,20 +29,21 @@ def get_worklog_event_groups(date=None):
         raise CommandError('No project name set')
 
     p_out = get_git_log_file()
-    process = compose(
-        group_events,
-        partial(sorted, key=lambda e: e.datetime),
-        partial(filter, lambda e: e.datetime.date() == date),
+    process_into_events = lambda project_name: build_pipe(
+        partial(map, partial(event_from_gitlog, project_name=project_name)),
         partial(filter, lambda e: e.author_email == email),
-        partial(map, partial(event_from_gitlog, project_name=project_name))
+        partial(filter, lambda e: e.datetime.date() == date),
+        partial(sorted, key=lambda e: e.datetime),
     )
-    result = process(p_out)
+    events = process_into_events(project_name)(p_out)
     p_out.close()
-    return result
+
+    events_groups = group_events(events)
+    return events_groups
 
 
-def print_worklog_events_by_date(date):
-    event_groups = get_worklog_event_groups(date)
+def print_worklog_events_by_date(date, team=None):
+    event_groups = get_worklog_event_groups(date, team=team)
     if not event_groups:
         cprint('JIRA worklog for {} is empty.'.format(date),
                color=bcolors.BOLD)
