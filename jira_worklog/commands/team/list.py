@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals, print_function
 
-from ..config import get_teams, retrieve_config
+from jira_worklog.config import get_teams, retrieve_config
 
 
 def command():

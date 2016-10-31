@@ -1,8 +1,9 @@
 from __future__ import absolute_import, unicode_literals, print_function
 import os
 
-from ..exceptions import CommandError
-from ..config import add_repository_directory, retrieve_config, save_config
+from jira_worklog.exceptions import CommandError
+from jira_worklog.config import (add_repository_directory,
+                                 retrieve_config, save_config)
 
 
 def prepare_parser(parser):
