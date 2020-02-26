@@ -9,7 +9,7 @@ def read(fname):
 
 setup(
     name='git-jira-worklog',
-    version='0.1',
+    version='0.1.0',
     packages=find_packages(),
     author='Andrzej Pragacz',
     author_email='apragacz@o2.pl',

@@ -87,7 +87,7 @@ def command(**kwargs):
     bool_option_map = create_map(BOOL_OPTIONS)
     value_option_map = create_map(VALUE_OPTIONS)
 
-    with tempfile.NamedTemporaryFile() as f:
+    with tempfile.NamedTemporaryFile(mode='w') as f:
         f.write(issue_prefix)
         f.flush()
         cmd_args = ['git', 'commit']

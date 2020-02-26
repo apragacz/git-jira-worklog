@@ -1,6 +1,5 @@
 from __future__ import unicode_literals, print_function
 
-from jira_worklog.exceptions import GitError
 from jira_worklog.git import set_issue, get_current_branch
 
 
